@@ -166,7 +166,7 @@ const (
 	// AllTags fetch all tags from the remote (i.e., fetch remote tags
 	// refs/tags/* into local tags with the same name)
 	AllTags
-	//NoTags fetch no tags from the remote at all
+	// NoTags fetch no tags from the remote at all
 	NoTags
 )
 
@@ -198,6 +198,9 @@ type FetchOptions struct {
 	CABundle []byte
 	// ProxyOptions provides info required for connecting to a proxy.
 	ProxyOptions transport.ProxyOptions
+	// Prune specify that local refs that match given RefSpecs and that do
+	// not exist remotely will be removed.
+	Prune bool
 }
 
 // Validate validates the fields and sets the default values.
@@ -324,9 +327,9 @@ var (
 
 // CheckoutOptions describes how a checkout operation should be performed.
 type CheckoutOptions struct {
-	// Hash is the hash of the commit to be checked out. If used, HEAD will be
-	// in detached mode. If Create is not used, Branch and Hash are mutually
-	// exclusive.
+	// Hash is the hash of a commit or tag to be checked out. If used, HEAD
+	// will be in detached mode. If Create is not used, Branch and Hash are
+	// mutually exclusive.
 	Hash plumbing.Hash
 	// Branch to be checked out, if Branch and Hash are empty is set to `master`.
 	Branch plumbing.ReferenceName
@@ -474,6 +477,11 @@ type AddOptions struct {
 	// Glob adds all paths, matching pattern, to the index. If pattern matches a
 	// directory path, all directory contents are added to the index recursively.
 	Glob string
+	// SkipStatus adds the path with no status check. This option is relevant only
+	// when the `Path` option is specified and does not apply when the `All` option is used.
+	// Notice that when passing an ignored path it will be added anyway.
+	// When true it can speed up adding files to the worktree in very large repositories.
+	SkipStatus bool
 }
 
 // Validate validates the fields and sets the default values.
